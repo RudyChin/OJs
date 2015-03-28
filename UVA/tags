@@ -1,0 +1,26 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+LARGEST	TheFibBase.cpp	7;"	d	file:
+add	TeX.cpp	/^void add(char *line, int pos, quote_t q) {$/;"	f
+algo	3n+1.c	/^int algo(unsigned i) {$/;"	f
+dist	3n+1.c	/^int dist[1000001];$/;"	v
+findPos	TheFibBase.cpp	/^int findPos(int *fib,int input) {$/;"	f
+key	WhatsCryptanalysis.cpp	/^	int key;$/;"	m	struct:myObj	file:
+leftQ	TeX.cpp	/^	leftQ,$/;"	e	enum:__anon1	file:
+main	3n+1.c	/^int main() {$/;"	f
+main	BrickWallPattern.cpp	/^int main() {$/;"	f
+main	FunnyEncrypt.cpp	/^int main() {$/;"	f
+main	TeX.cpp	/^int main() {$/;"	f
+main	TheFibBase.cpp	/^int main() {$/;"	f
+main	WhatsCryptanalysis.cpp	/^int main() {$/;"	f
+myCompare	WhatsCryptanalysis.cpp	/^bool myCompare(struct myObj i, struct myObj j) {$/;"	f
+myObj	WhatsCryptanalysis.cpp	/^struct myObj {$/;"	s	file:
+power	FunnyEncrypt.cpp	/^int power(int base, int exp) {$/;"	f
+quote_t	TeX.cpp	/^} quote_t;$/;"	t	typeref:enum:__anon1	file:
+rightQ	TeX.cpp	/^	rightQ$/;"	e	enum:__anon1	file:
+swap	3n+1.c	/^void swap(int *i, int *j) {$/;"	f
+value	WhatsCryptanalysis.cpp	/^	int value;$/;"	m	struct:myObj	file:
