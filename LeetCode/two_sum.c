@@ -82,7 +82,7 @@ twoSum(int numbers[], int n, int target) {
   int hashtable[9991];
   for (int i = 0; i < n; i++) {
     int index = numbers[i] % 9991;
-    hashtable[index] = i+1;
+    hashtable[index] = i + 1;
   }
   /** sort first with nlogn algo **/
   mergeSort(numbers, n);
@@ -96,8 +96,8 @@ twoSum(int numbers[], int n, int target) {
       continue;
     } else if (numbers[i] + numbers[j] == target) {
       int *ans = (int *)malloc(sizeof(int)*2);
-      int idx1 = hashtable[numbers[i]%9991];
-      int idx2 = hashtable[numbers[j]&9991];
+      int idx1 = hashtable[numbers[i] % 9991];
+      int idx2 = hashtable[numbers[j] % 9991];
       if (idx1 > idx2) {
         ans[0] = idx2;
         ans[1] = idx1;
