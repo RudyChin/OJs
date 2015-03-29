@@ -10,59 +10,80 @@
  * Output: index1=1, index2=2
  */
 
+
+/* Solve by Rudy Chin.
+ * Solution:
+ *  First use hash table to hash from value to original indexes.
+ *  Use Merge Sort O(N log N) to sort the array.
+ *  Go through the array, if target is lesser than current i and j
+ *  then increase i and make j = i + 1.
+ *  (There is no help to loop through the rest j)
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
 void 
-concat(int *left, int l, int m, int r, int *right, int *sorted) {
-  int idx = 0;
+concat(int *arr, int l, int m, int r, int *sorted) {
+  int idx = l;
   int x = l, y = m;
   while (x < m && y < r) {
-    if (left[x] < right[y])
-      sorted[idx++] = left[x++];
+    if (arr[x] < arr[y])
+      sorted[idx++] = arr[x++];
     else
-      sorted[idx++] = right[y++];
+      sorted[idx++] = arr[y++];
   }
   for (x; x < m; x++)
-    sorted[idx++] = left[x];
+    sorted[idx++] = arr[x];
   for (y; y < r; y++)
-    sorted[idx++] = right[y];
+    sorted[idx++] = arr[y];
+}
+
+void
+copy(int *arr, int *sorted, int l, int r) {
+  for (l; l < r; l++)
+    arr[l] = sorted[l];
 }
 
 void 
 mergeSplit(int *arr, int l, int r, int *sorted) {
   if (r - l < 2) {
-    sorted[0] = arr[l];
     return;
   }
   int m = (l + r) / 2;
-  int *left = (int *)malloc(sizeof(int)*(l+r+1)/2);
-  int *right = (int *)malloc(sizeof(int)*(l+r+1)/2);
-  mergeSplit(arr, l, m, left);
-  mergeSplit(arr, m, r, right);
-  concat(left, l, m, r, right, sorted);
+  mergeSplit(arr, l, m, sorted);
+  mergeSplit(arr, m, r, sorted);
+  concat(arr, l, m, r, sorted);
+  copy(arr, sorted, l, r);
 }
 
 void 
 mergeSort(int *arr, int n) {
-  int l = 0;
-  int r = n;
   int *sorted = (int *)malloc(sizeof(int)*n);
-  mergeSplit(arr, l, r, sorted);
-  for (int i = 0; i < r; i++)
-    arr[i] = sorted[i];
+  for (int i = 0; i < n; i++)
+    sorted[i] = arr[i];
+  mergeSplit(arr, 0, n, sorted);
+  free(sorted);
 }
 
 void
 testMerge() {
-  int arr[10] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-  mergeSort(arr, 10);
-  for (int i = 0; i < 10; i++)
+  int arr[3] = {3, 2, 4};
+  mergeSort(arr, 3);
+  for (int i = 0; i < 3; i++)
     printf("%d ", arr[i]);
+  printf("\n");
 }
 
 int *
 twoSum(int numbers[], int n, int target) {
+  /** hash value to indexes before sort **/
+  int hashtable[9991];
+  for (int i = 0; i < n; i++) {
+    int index = numbers[i] % 9991;
+    hashtable[index] = i+1;
+  }
   /** sort first with nlogn algo **/
   mergeSort(numbers, n);
 
@@ -75,8 +96,15 @@ twoSum(int numbers[], int n, int target) {
       continue;
     } else if (numbers[i] + numbers[j] == target) {
       int *ans = (int *)malloc(sizeof(int)*2);
-      ans[0] = i;
-      ans[1] = j;
+      int idx1 = hashtable[numbers[i]%9991];
+      int idx2 = hashtable[numbers[j]&9991];
+      if (idx1 > idx2) {
+        ans[0] = idx2;
+        ans[1] = idx1;
+      } else {
+        ans[0] = idx1;
+        ans[1] = idx2;
+      }
       return ans;
     }
     j++;
@@ -90,5 +118,8 @@ twoSum(int numbers[], int n, int target) {
 int
 main() {
   testMerge();
+  int numbers[] = {3, 2, 4};
+  int *ans = twoSum(numbers, 3, 6);
+  printf("%d %d\n", ans[0], ans[1]);
   return 0;
 }
