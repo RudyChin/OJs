@@ -13,10 +13,58 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void 
+concat(int *left, int l, int m, int r, int *right, int *sorted) {
+  int idx = 0;
+  int x = l, y = m;
+  while (x < m && y < r) {
+    if (left[x] < right[y])
+      sorted[idx++] = left[x++];
+    else
+      sorted[idx++] = right[y++];
+  }
+  for (x; x < m; x++)
+    sorted[idx++] = left[x];
+  for (y; y < r; y++)
+    sorted[idx++] = right[y];
+}
+
+void 
+mergeSplit(int *arr, int l, int r, int *sorted) {
+  if (r - l < 2) {
+    sorted[0] = arr[l];
+    return;
+  }
+  int m = (l + r) / 2;
+  int *left = (int *)malloc(sizeof(int)*(l+r+1)/2);
+  int *right = (int *)malloc(sizeof(int)*(l+r+1)/2);
+  mergeSplit(arr, l, m, left);
+  mergeSplit(arr, m, r, right);
+  concat(left, l, m, r, right, sorted);
+}
+
+void 
+mergeSort(int *arr, int n) {
+  int l = 0;
+  int r = n;
+  int *sorted = (int *)malloc(sizeof(int)*n);
+  mergeSplit(arr, l, r, sorted);
+  for (int i = 0; i < r; i++)
+    arr[i] = sorted[i];
+}
+
+void
+testMerge() {
+  int arr[10] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+  mergeSort(arr, 10);
+  for (int i = 0; i < 10; i++)
+    printf("%d ", arr[i]);
+}
+
 int *
 twoSum(int numbers[], int n, int target) {
   /** sort first with nlogn algo **/
-  numbers = mergesort(numbers, n);
+  mergeSort(numbers, n);
 
   /** conditional compare **/
   int i = 0, j = 1;
@@ -39,3 +87,8 @@ twoSum(int numbers[], int n, int target) {
   }
 }
 
+int
+main() {
+  testMerge();
+  return 0;
+}
