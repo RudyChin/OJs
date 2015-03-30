@@ -20,7 +20,8 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solutions:
- *   Sum each of the list first, and then mod 10 gradualy.
+ *   add each digit separately, the benefit is that it save space and can
+ *   handle large number.
  *
  */
 
@@ -35,30 +36,29 @@ struct ListNode {
 };
 
 class Solution {
-  private:
-    long sumOfList(ListNode *l) {
-      long sum = 0;
-      long base = 1;
-      ListNode *iter = l;
-      while (iter) {
-        sum += iter->val * base;
-        base *= 10;
-        iter = iter->next;
-      }
-      return sum;
-    }
   public:
     ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-      long lsum = 0;
-      lsum += sumOfList(l1);
-      lsum += sumOfList(l2);
-      ListNode *sum = new ListNode(lsum % 10);
-      lsum /= 10;
-      ListNode *iter = sum;
-      while (lsum) {
-        iter->next = new ListNode(lsum % 10);
-        iter = iter->next; 
-        lsum /= 10;
+      int carry = 0;
+      int digit = l1->val + l2->val + carry;
+      carry = digit / 10;
+      digit = digit % 10;
+      ListNode *iter1 = l1->next;
+      ListNode *iter2 = l2->next;
+      ListNode *sum = new ListNode(digit);
+      ListNode *iterSum = sum;
+      while (iter1 || iter2) {
+        int i1 = iter1? iter1->val : 0;
+        int i2 = iter2? iter2->val : 0;
+        digit = i1 + i2 + carry;
+        carry = digit / 10;
+        digit = digit % 10;
+        iterSum->next = new ListNode(digit);
+        iterSum = iterSum->next;
+        iter1 = iter1? iter1->next : NULL;
+        iter2 = iter2? iter2->next : NULL;
+      }
+      if (carry) {
+        iterSum->next = new ListNode(carry);
       }
       return sum;
     }
