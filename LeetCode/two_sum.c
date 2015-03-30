@@ -78,12 +78,11 @@ testMerge() {
 
 int *
 twoSum(int numbers[], int n, int target) {
-  /** hash value to indexes before sort **/
-  int hashtable[9991];
-  for (int i = 0; i < n; i++) {
-    int index = numbers[i] % 9991;
-    hashtable[index] = i + 1;
-  }
+  /** store the original array **/
+  int *original = (int *)malloc(sizeof(int)*n);
+  for (int i = 0; i < n; i++)
+    original[i] = numbers[i];
+
   /** sort first with nlogn algo **/
   mergeSort(numbers, n);
 
@@ -96,8 +95,16 @@ twoSum(int numbers[], int n, int target) {
       continue;
     } else if (numbers[i] + numbers[j] == target) {
       int *ans = (int *)malloc(sizeof(int)*2);
-      int idx1 = hashtable[numbers[i] % 9991];
-      int idx2 = hashtable[numbers[j] % 9991];
+      int idx1 = 0;
+      int idx2 = 0;
+      for (int k = 0; k < n; k++) {
+        if (!idx1 && original[k] == numbers[i])
+          idx1 = k+1;
+        else if (!idx2 && original[k] == numbers[j])
+          idx2 = k+1;
+        else if (idx1 && idx2)
+          break;
+      }
       if (idx1 > idx2) {
         ans[0] = idx2;
         ans[1] = idx1;
@@ -118,8 +125,8 @@ twoSum(int numbers[], int n, int target) {
 int
 main() {
   testMerge();
-  int numbers[] = {3, 2, 4};
-  int *ans = twoSum(numbers, 3, 6);
+  int numbers[] = {0, 2, 0};
+  int *ans = twoSum(numbers, 3, 0);
   printf("%d %d\n", ans[0], ans[1]);
   return 0;
 }
