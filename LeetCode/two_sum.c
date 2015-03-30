@@ -11,7 +11,10 @@
  */
 
 
-/* Solve by Rudy Chin.
+/* 
+ * Authur: Rudy Chin
+ * Email: bb1168kk@gmail.com
+ * 
  * Solution:
  *  First store the original array.
  *  Use Merge Sort O(N log N) to sort the array.
