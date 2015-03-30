@@ -18,8 +18,8 @@
  * Solution:
  *  First store the original array into value index pair array.
  *  Use Merge Sort O(N log N) to sort the array.
- *  Go through the array, if target is lesser than current i and j
- *  then increase i and make j = i + 1.
+ *  For i = 0 ~ N, use binary search to find j in order to let
+ *  arr[i] + arr[j] == target.
  *  (There is no help to loop through the rest j)
  *  if the sum matches target, find index value in that pair
  *
@@ -89,29 +89,28 @@ twoSum(int numbers[], int n, int target) {
   mergeSort(arr, n);
 
   /** conditional compare **/
-  int i = 0, j = 1;
-  while (i < n) {
-    if (arr[i].value + arr[j].value > target) {
-      i++;
-      j = i + 1;
-      continue;
-    } else if (arr[i].value + arr[j].value == target) {
-      int *ans = (int *)malloc(sizeof(int)*2);
-      int idx1 = arr[i].index;
-      int idx2 = arr[j].index;
-      if (idx1 > idx2) {
-        ans[0] = idx2;
-        ans[1] = idx1;
+  int i = 0;
+  for (i; i < n; i++) {
+    int imin = i, imax = n-1;
+    while (imin <= imax) {
+      int imid = (imin+imax)/2;
+      if (arr[i].value + arr[imid].value > target) {
+        imax = imid - 1;
+      } else if (arr[i].value + arr[imid].value < target) {
+        imin = imid + 1;
       } else {
-        ans[0] = idx1;
-        ans[1] = idx2;
+        int *ans = (int *)malloc(sizeof(int)*2);
+        int idx1 = arr[i].index;
+        int idx2 = arr[imid].index;
+        if (idx1 > idx2) {
+          ans[0] = idx2;
+          ans[1] = idx1;
+        } else {
+          ans[0] = idx1;
+          ans[1] = idx2;
+        }
+        return ans;
       }
-      return ans;
-    }
-    j++;
-    if (j == n) {
-      i++;
-      j = i+1;
     }
   }
 }
@@ -131,8 +130,8 @@ testMerge() {
 int
 main() {
   testMerge();
-  int numbers[] = {0, 4, 3, 0};
-  int *ans = twoSum(numbers, 4, 0);
+  int numbers[] = {5, 75, 25};
+  int *ans = twoSum(numbers, 3, 100);
   printf("%d %d\n", ans[0], ans[1]);
   return 0;
 }
