@@ -13,11 +13,13 @@
 
 /* Solve by Rudy Chin.
  * Solution:
- *  First use hash table to hash from value to original indexes.
+ *  First store the original array.
  *  Use Merge Sort O(N log N) to sort the array.
  *  Go through the array, if target is lesser than current i and j
  *  then increase i and make j = i + 1.
  *  (There is no help to loop through the rest j)
+ *  Use the answer value that just found to search for indexes
+ *  inside the original array.
  *
  */
 
