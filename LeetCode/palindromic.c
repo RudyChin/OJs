@@ -19,51 +19,30 @@
 #include <string.h>
 
 int dp[1000][1000];
-int p[1000][1000];
-
-int find(char *s, int left, int right) {
-  if (left == right) 
-    return 1;
-  else if (left > right)
-    return 0;
-  if (dp[left][right] != -1)
-    return dp[left][right];
-
-  if (s[left] == s[right]) {
-    dp[left][right] = find(s, left+1, right-1) + 2;
-    p[left][right] = 0;
-  } else if (find(s, left+1, right) > find(s, left, right-1)) {
-    dp[left][right] = find(s, left+1, right);
-    p[left][right] = 1;
-  } else if (find(s, left+1, right) <= find(s, left, right-1)) {
-    dp[left][right] = find(s, left, right-1);
-    p[left][right] = 2;
-  }
-  return dp[left][right];
-}
-
-void printSub(char *s, char *ans, int *index, int left, int right) {
-  if (left == right)
-    ans[(*index)++] = s[left];
-  if (left < right) {
-    if (p[left][right] == 0) {
-      ans[(*index)++] = s[left];
-      printSub(s, ans, index, left+1, right-1);
-      ans[(*index)++] = s[left];
-    }
-    else if (p[left][right] == 1)
-      printSub(s, ans, index, left+1, right);
-    else if (p[left][right] == 2)
-      printSub(s, ans, index, left, right-1);
-  }
-}
 
 char *longestPalindrome(char *s) {
   memset(dp, -1, sizeof(dp));
-  int max = find(s, 0, strlen(s)-1);
+  int start = 0;
+  int end = 0;
+  int max = 0;
+  int length = strlen(s);
+  for (int i = length-1; i >= 0; --i) {
+    for (int j = i; j < length; ++j) {
+      dp[i][j] = (s[i] == s[j]) && (j - i < 2 || dp[i+1][j-1]);
+      if (dp[i][j]) {
+        if (max < j - i + 1) {
+          max = j - i + 1;
+          start = i;
+          end = j;
+        }
+      }
+    }
+  }
+
   char *ans = (char *)malloc(sizeof(char)*(max+1));
   int idx = 0;
-  printSub(s, ans, &idx, 0, strlen(s)-1);
+  for (int i = start; i <= end; ++i)
+    ans[idx++] = s[i];
   ans[idx] = '\0';
   return ans;
 }
