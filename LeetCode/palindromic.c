@@ -9,61 +9,61 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solution:
+ *   Use dynamic programming to save information of substring length
  *
  */
 
-int checkPalindrome(char *s, int index, int n) {
-  int shift = !(n % 2);
-  for (int i = 0; i < (n-1+shift)/2; i++)
-    if (s[index-i] != s[index+i+shift])
-      return 0;
-  return 1;
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int dp[1000][1000];
+int p[1000][1000];
+
+int find(char *s, int left, int right) {
+  if (left == right) 
+    return 1;
+  else if (left > right)
+    return 0;
+  if (dp[left][right] != -1)
+    return dp[left][right];
+
+  if (s[left] == s[right]) {
+    dp[left][right] = find(s, left+1, right-1) + 2;
+    p[left][right] = 0;
+  } else if (find(s, left+1, right) > find(s, left, right-1)) {
+    dp[left][right] = find(s, left+1, right);
+    p[left][right] = 1;
+  } else if (find(s, left+1, right) <= find(s, left, right-1)) {
+    dp[left][right] = find(s, left, right-1);
+    p[left][right] = 2;
+  }
+  return dp[left][right];
+}
+
+void printSub(char *s, char *ans, int *index, int left, int right) {
+  if (left == right)
+    ans[(*index)++] = s[left];
+  if (left < right) {
+    if (p[left][right] == 0) {
+      ans[(*index)++] = s[left];
+      printSub(s, ans, index, left+1, right-1);
+      ans[(*index)++] = s[left];
+    }
+    else if (p[left][right] == 1)
+      printSub(s, ans, index, left+1, right);
+    else if (p[left][right] == 2)
+      printSub(s, ans, index, left, right-1);
+  }
 }
 
 char *longestPalindrome(char *s) {
-  int length = strlen(s);    
-  int isOdd = length % 2;
-  int mid = (length-1)/2;
-  int max = 0;
-  int max_begin = 0;
-  int max_end = 0;
-  
-  for (int i = mid; i >= 0; i--) {
-    for (int j = (i+1)*2-isOdd; j >= 1; j--) {
-      if (max > j) {
-        break;
-      }
-      if (checkPalindrome(s, i, j)) {
-        if (max < j) { 
-          max = j;
-          max_begin = i - j/2 + !(j%2);
-          max_end = i + j/2;
-          break;
-        }
-      }
-    }
-  }
-  for (int i = mid+1; i < length; i++) {
-    for (int j = (length-i)*2; j >= 1; j--) {
-      if (max > j) {
-        break;
-      }
-      if (checkPalindrome(s, i, j)) {
-        if (max < j) { 
-          max = j;
-          max_begin = i - j/2 + !(j%2);
-          max_end = i + j/2;
-          break;
-        }
-      }
-    }
-  }
-
+  memset(dp, -1, sizeof(dp));
+  int max = find(s, 0, strlen(s)-1);
   char *ans = (char *)malloc(sizeof(char)*(max+1));
   int idx = 0;
-  for (int i = max_begin; i <= max_end; i++) {
-    ans[idx++] = s[i];
-  }
+  printSub(s, ans, &idx, 0, strlen(s)-1);
   ans[idx] = '\0';
   return ans;
 }
