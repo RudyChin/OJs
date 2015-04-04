@@ -9,7 +9,7 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solution:
- *   Use dynamic programming to save information of substring length
+ *   Use dynamic programming and Manacher's Algorithm.
  *
  */
 
@@ -40,8 +40,9 @@ char *longestPalindrome(char *s) {
   }
 
   //computation
-  int coverM = 0, coverR = 0;
-  int mirror = 0;
+  int coverM = -1;  //coverM is the longest coverage index(say j) before current index(say i)
+  int coverR = -1;  //coverR is the right coverage boundary of i
+  int mirror = 0;   //is the mirror of i to j 
   int max = 0, maxp = 0;
   for (int i = 0; i < n2; i++) {
     mirror = coverM - (i - coverM);
@@ -66,7 +67,7 @@ char *longestPalindrome(char *s) {
     }
   }
 
-  char *ans = (char *)malloc(sizeof(char)*((max-1)/2)+1);
+  char *ans = (char *)malloc(sizeof(char)*max);
   int idx = 0;
   for (int i = maxp-(z[maxp]-1); i <= maxp+(z[maxp]-1); i++) {
     if (extendN[i] != '.')
@@ -80,7 +81,7 @@ char *longestPalindrome(char *s) {
 
 
 void test() {
-  char s[] = "bb";
+  char s[] = "zeusnilemacaronimaisanitratetartinasiaminoracamelinsuez";
   char *ans = longestPalindrome(s);
   printf("%s\n", ans);
 }
