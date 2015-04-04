@@ -18,38 +18,69 @@
 #include <stdlib.h>
 #include <string.h>
 
-int dp[1000][1000];
+int z[2002];
+
+int match(char *s, int N, int l, int r) {
+  int i = 0;
+  while (l-i >= 0 && r+i < N && s[l-i] == s[r+i])
+    i++;
+  return i;
+}
 
 char *longestPalindrome(char *s) {
-  memset(dp, -1, sizeof(dp));
-  int start = 0;
-  int end = 0;
-  int max = 0;
-  int length = strlen(s);
-  for (int i = length-1; i >= 0; --i) {
-    for (int j = i; j < length; ++j) {
-      dp[i][j] = (s[i] == s[j]) && (j - i < 2 || dp[i+1][j-1]);
-      if (dp[i][j]) {
-        if (max < j - i + 1) {
-          max = j - i + 1;
-          start = i;
-          end = j;
-        }
+  memset(z, -1, sizeof(z));
+  int n = strlen(s);
+  int n2 = 2*n+1;
+  char *extendN = (char *)malloc(sizeof(char)*n2);
+
+  //initialization
+  memset(extendN, '.', sizeof(char)*n2);
+  for (int i = 0; i < n; i++) {
+    extendN[i*2+1] = s[i];
+  }
+
+  //computation
+  int coverM = 0, coverR = 0;
+  int mirror = 0;
+  int max = 0, maxp = 0;
+  for (int i = 0; i < n2; i++) {
+    mirror = coverM - (i - coverM);
+    if (i > coverR) {
+      z[i] = match(extendN, n2, i, i);
+      if (max < z[i]) {
+        max = z[i];
+        maxp = i;
       }
+      coverM = i;
+      coverR = i + z[i] - 1;
+    } else if (z[mirror] + i - 1 == coverR) {
+      z[i] = z[mirror] + match(extendN, n2, i-z[mirror], i+z[mirror]);
+      if (max < z[i]) {
+        max = z[i];
+        maxp = i;
+      }
+      coverM = i;
+      coverR = i + z[i] - 1;
+    } else {
+      z[i] = z[mirror] < (coverR - i + 1) ? z[mirror] : (coverR - i + 1);
     }
   }
 
-  char *ans = (char *)malloc(sizeof(char)*(max+1));
+  char *ans = (char *)malloc(sizeof(char)*((max-1)/2)+1);
   int idx = 0;
-  for (int i = start; i <= end; ++i)
-    ans[idx++] = s[i];
+  for (int i = maxp-(z[maxp]-1); i <= maxp+(z[maxp]-1); i++) {
+    if (extendN[i] != '.')
+      ans[idx++] = extendN[i];
+  }
   ans[idx] = '\0';
+
   return ans;
+
 }
 
 
 void test() {
-  char s[] = "abcvbgbvc";
+  char s[] = "bb";
   char *ans = longestPalindrome(s);
   printf("%s\n", ans);
 }
