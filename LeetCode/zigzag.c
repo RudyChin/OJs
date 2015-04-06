@@ -25,6 +25,7 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solutions:
+ *  Try using arrays
  *
  */
 
