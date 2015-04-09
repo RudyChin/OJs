@@ -52,6 +52,10 @@ int myAtoi(char *str)
     negative = 1;
     sum = calculate(str, 1, length);
   }
+  else if (str[0] == '+')
+  {
+    sum = calculate(str, 1, length); 
+  }
   else
   {
     sum = calculate(str, 0, length);
@@ -72,6 +76,7 @@ void atoiTest()
    printf("str:2147483688 int:[%d]\n", myAtoi("2147483688")); 
    printf("str:-1234512 int:[%d]\n", myAtoi("-1234512")); 
    printf("str:-2147483648 int:[%d]\n", myAtoi("-2147483648")); 
+   printf("str:+1 int:[%d]\n", myAtoi("+1")); 
 }
 
 int main(int argc, char *argv[])
