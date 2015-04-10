@@ -12,7 +12,9 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
 
 long lpow(int base, int exp)
 {
@@ -34,10 +36,6 @@ long calculate(char *str, int start, int end)
     {
         sum += (str[i]-'0') * lpow(10, end-i-1); 
     } 
-    else
-    {
-        return 0;  
-    }
   }
   return sum;
 }
@@ -47,21 +45,38 @@ int myAtoi(char *str)
   int length = strlen(str);
   int negative = 0;
   long sum;
-  if (str[0] == '-') 
+  int start = 0, end = length;
+  while (str[start] == ' ')
+    start++; 
+
+  if (str[start] == '-') 
   {
     negative = 1;
-    sum = calculate(str, 1, length);
+    for (int i = start+1; i < length; i++)
+      if (str[i] - '0' < 0 || str[i] - '0' > 9) {
+        end = i; 
+        break;
+      }
+    sum = calculate(str, start+1, end);
   }
-  else if (str[0] == '+')
+  else if (str[start] == '+') 
   {
-    sum = calculate(str, 1, length); 
+    for (int i = start+1; i < length; i++)
+      if (str[i] - '0' < 0 || str[i] - '0' > 9) {
+        end = i; 
+        break;
+      }
+    sum = calculate(str, start+1, end); 
   }
   else
   {
-    sum = calculate(str, 0, length);
+    for (int i = start; i < length; i++)
+      if (str[i] - '0' < 0 || str[i] - '0' > 9) {
+        end = i; 
+        break;
+      }
+    sum = calculate(str, start, end);
   }
-  if (sum > 1<<(31-1))
-    return 0;
   if (negative)
     sum = -sum;
 
@@ -69,14 +84,30 @@ int myAtoi(char *str)
     
 }
 
+void printCmp(char *str)
+{
+  int pass = (myAtoi(str) == atoi(str));
+  printf("test:[%s] result:[%s]\n", str, pass?"pass":"fail");
+  if (!pass)
+  {
+    printf("Output:[%d] Expected:[%d]\n", myAtoi(str), atoi(str)); 
+  }
+   
+}
+
 void atoiTest() 
 {
-   printf("str:12345678 int:[%d]\n", myAtoi("12345678")); 
-   printf("str:0 int:[%d]\n", myAtoi("0")); 
-   printf("str:2147483688 int:[%d]\n", myAtoi("2147483688")); 
-   printf("str:-1234512 int:[%d]\n", myAtoi("-1234512")); 
-   printf("str:-2147483648 int:[%d]\n", myAtoi("-2147483648")); 
-   printf("str:+1 int:[%d]\n", myAtoi("+1")); 
+  printCmp("12345678");
+  printCmp("0");
+  printCmp("2147483648");
+  printCmp("-1234512");
+  printCmp("-2147483648");
+  printCmp("+1");
+  printCmp("    00321");
+  printCmp("asd132    00321");
+  printCmp("13aasd2    00321");
+  printCmp("    +00321");
+  printCmp("    -2147483649");
 }
 
 int main(int argc, char *argv[])
