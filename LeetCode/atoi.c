@@ -8,6 +8,13 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solutions:
+ *   Parse the string first to get start and end of digits
+ *   Pass sign, start, end into a function to loop throught the string and
+ *   calculate the sum
+ *
+ *   (On Leetcode only)
+ *   if the value exceeds integer's maximum, return maximum
+ *   if the value below integer's minimun, return minumum 
  *
  */
 
@@ -15,6 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define INT_MAX (2147483647)
+#define INT_MIN (-2147483648)
 
 long lpow(int base, int exp)
 {
@@ -31,62 +40,58 @@ long calculate(char *str, int start, int end)
 {
   long sum = 0;
   for (int i = start; i < end; ++i) 
-  {
-    if (str[i] - '0' >= 0 && str[i] - '0' <= 9) 
-    {
-        sum += (str[i]-'0') * lpow(10, end-i-1); 
-    } 
-  }
+    sum += (str[i]-'0') * lpow(10, end-i-1); 
   return sum;
+}
+
+void parse(char *str, int *start, int *end, int *negative)
+{
+  int length = strlen(str);
+  int s = 0, e = length;
+  *negative = 0;
+
+  while (str[s] == ' ' || str[s] == '\t')
+    s++;
+  if (str[s] == '-' || str[s] == '+') 
+  {
+    if (str[s] == '-')
+      *negative = 1;
+    s++;
+  }
+  for (int i = s; i < length; ++i)
+    if (str[i] - '0' < 0 || str[i] - '0' > 9) {
+      e = i; 
+      break;
+    }
+  *start = s;
+  *end = e;
 }
 
 int myAtoi(char *str) 
 {
-  int length = strlen(str);
-  int negative = 0;
+  int negative, start, end;
   long sum;
-  int start = 0, end = length;
-  while (str[start] == ' ')
-    start++; 
 
-  if (str[start] == '-') 
-  {
-    negative = 1;
-    for (int i = start+1; i < length; i++)
-      if (str[i] - '0' < 0 || str[i] - '0' > 9) {
-        end = i; 
-        break;
-      }
-    sum = calculate(str, start+1, end);
+  parse(str, &start, &end, &negative);
+  if (end-start > 10) {
+    if (negative)
+      return INT_MIN;
+    else
+      return INT_MAX;
   }
-  else if (str[start] == '+') 
-  {
-    for (int i = start+1; i < length; i++)
-      if (str[i] - '0' < 0 || str[i] - '0' > 9) {
-        end = i; 
-        break;
-      }
-    sum = calculate(str, start+1, end); 
-  }
-  else
-  {
-    for (int i = start; i < length; i++)
-      if (str[i] - '0' < 0 || str[i] - '0' > 9) {
-        end = i; 
-        break;
-      }
-    sum = calculate(str, start, end);
-  }
+  sum = calculate(str, start, end); 
   if (negative)
     sum = -sum;
+  if (sum > INT_MAX) return INT_MAX;
+  if (sum < INT_MIN) return INT_MIN;
 
   return (int)sum;
-    
 }
 
 void printCmp(char *str)
 {
-  int pass = (myAtoi(str) == atoi(str));
+  int pass = 0;
+  pass = (myAtoi(str) == atoi(str));
   printf("test:[%s] result:[%s]\n", str, pass?"pass":"fail");
   if (!pass)
   {
@@ -100,6 +105,7 @@ void atoiTest()
   printCmp("12345678");
   printCmp("0");
   printCmp("2147483648");
+  printCmp("99999999999999999");
   printCmp("-1234512");
   printCmp("-2147483648");
   printCmp("+1");
