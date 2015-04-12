@@ -24,10 +24,15 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solutions:
+ *   Extend original string and pattern, add '!' in begin and end
+ *   Use strstr to find
+ *   TODO:
+ *   reg_exp operators, i.e. '.', '*' ...
  *
  */
 
 #include <iostream>
+#include <string.h>
 #include <gtest/gtest.h>
 
 using namespace std;
@@ -35,7 +40,29 @@ using namespace std;
 class Solution : public ::testing::Test {
 public:
     bool isMatch(const char *s, const char *p) {
-      return false;
+      char *extS, *extP, *tmp;
+      extS = (char *)malloc(sizeof(char)*(strlen(s)+2));
+      extP = (char *)malloc(sizeof(char)*(strlen(p)+2));
+      
+      int i, j;
+      for (i = 0, j = 0; i < strlen(s)+2; ++i) { if (!i || i == strlen(s)+1)
+          extS[i] = '!';
+        else
+          extS[i] = s[j++];
+      }
+      for (i = 0, j = 0; i < strlen(p)+2; ++i) {
+        if (!i || i == strlen(p)+1)
+          extP[i] = '!';
+        else
+          extP[i] = p[j++];
+      }
+
+      tmp = strstr(extS, extP);
+
+      if (tmp == NULL)
+        return false;
+      else
+        return true;
     }
 };
 
