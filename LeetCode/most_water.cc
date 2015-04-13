@@ -24,14 +24,56 @@ using namespace std;
 class Solution : public ::testing::Test {
   public:
     int maxArea(vector<int> &height) {
+      int size = height.size();
       int sum = 0;
-      int smaller;
-      for (int i = 0; i < height.size()-1; i++) {
-        for (int j = i+1; j < height.size(); j++) {
-          smaller = height[i]>height[j]?height[j]:height[i];
-          if (sum < smaller*(j-i))
-            sum = smaller*(j-i);
-        } 
+      for (int i = 0; i < size; ++i) {
+        int bigger = 0;
+        int headFirst = (size-1-i < i? i : size-1-i);
+        if (headFirst) {
+          //from head
+          for (int j = 0; j < i; ++j) {
+            if (height[j] > height[i]) {
+              bigger = i-j;
+              if (sum < height[i] * (i-j))
+                sum = height[i] * (i-j);
+              break;
+            }
+          }
+          //from tail
+          for (int j = size-1; j > i; --j) {
+            if (bigger > j-i)
+              break;
+            else {
+              if (height[j] > height[i]) {
+                if (sum < height[i] * (j-i))
+                  sum = height[i] * (j-i);
+                break;
+              }
+            }
+          }
+        } else {
+          //from tail
+          for (int j = size-1; j > i; --j) {
+            if (height[j] > height[i]) {
+              bigger = j-i;
+              if (sum < height[i] * (j-i))
+                sum = height[i] * (j-i);
+              break;
+            }
+          }
+          //from head
+          for (int j = 0; j < i; ++j) {
+            if (bigger > i-j)
+              break;
+            else {
+              if (height[j] > height[i]) {
+                if (sum < height[i] * (i-j))
+                  sum = height[i] * (i-j);
+                break;
+              }
+            }
+          }
+        }
       }
       return sum;
     }
