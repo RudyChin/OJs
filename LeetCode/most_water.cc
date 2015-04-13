@@ -12,6 +12,12 @@
  * Email: bb1168kk@gmail.com
  * 
  * Solutions:
+ *   Use two pointers to point to the first and the last element ('L'eft and
+ *   'R'ight)
+ *   While L != R
+ *   Compare a[L] and a[R] and modify max if necessary
+ *   If a[L] is smaller than a[R], which means a[R] still have chances to have
+ *   larger area, move pointer L, on the other hand, move R.
  *
  */
 
@@ -24,58 +30,20 @@ using namespace std;
 class Solution : public ::testing::Test {
   public:
     int maxArea(vector<int> &height) {
-      int size = height.size();
-      int sum = 0;
-      for (int i = 0; i < size; ++i) {
-        int bigger = 0;
-        int headFirst = (size-1-i < i? i : size-1-i);
-        if (headFirst) {
-          //from head
-          for (int j = 0; j < i; ++j) {
-            if (height[j] > height[i]) {
-              bigger = i-j;
-              if (sum < height[i] * (i-j))
-                sum = height[i] * (i-j);
-              break;
-            }
-          }
-          //from tail
-          for (int j = size-1; j > i; --j) {
-            if (bigger > j-i)
-              break;
-            else {
-              if (height[j] > height[i]) {
-                if (sum < height[i] * (j-i))
-                  sum = height[i] * (j-i);
-                break;
-              }
-            }
-          }
+      int L = 0, R = height.size()-1;
+      int max = 0;
+      while (L != R) {
+        if (height[L] < height[R]) {
+          if (max < height[L] * (R-L))
+            max = height[L] * (R-L);
+          ++L;
         } else {
-          //from tail
-          for (int j = size-1; j > i; --j) {
-            if (height[j] > height[i]) {
-              bigger = j-i;
-              if (sum < height[i] * (j-i))
-                sum = height[i] * (j-i);
-              break;
-            }
-          }
-          //from head
-          for (int j = 0; j < i; ++j) {
-            if (bigger > i-j)
-              break;
-            else {
-              if (height[j] > height[i]) {
-                if (sum < height[i] * (i-j))
-                  sum = height[i] * (i-j);
-                break;
-              }
-            }
-          }
+          if (max < height[R] * (R-L))
+            max = height[R] * (R-L);
+          --R;
         }
       }
-      return sum;
+      return max;
     }
 };
 
@@ -84,6 +52,17 @@ TEST_F(Solution, test) {
   testVec.push_back(1);
   testVec.push_back(2);
   EXPECT_EQ(1, maxArea(testVec)); 
+  testVec.push_back(3);
+  testVec.push_back(4);
+  testVec.push_back(5);
+  EXPECT_EQ(6, maxArea(testVec)); 
+  testVec.clear();
+  testVec.push_back(5);
+  testVec.push_back(4);
+  testVec.push_back(3);
+  testVec.push_back(2);
+  testVec.push_back(1);
+  EXPECT_EQ(6, maxArea(testVec)); 
 }
 
 int main(int argc, char *argv[])
