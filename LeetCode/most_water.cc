@@ -64,9 +64,3 @@ TEST_F(Solution, test) {
   testVec.push_back(1);
   EXPECT_EQ(6, maxArea(testVec)); 
 }
-
-int main(int argc, char *argv[])
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

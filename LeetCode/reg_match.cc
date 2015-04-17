@@ -70,9 +70,3 @@ TEST_F(Solution, test) {
   EXPECT_EQ(isMatch("aaa", "a"), false); 
   EXPECT_EQ(isMatch("aaa", "aaa"), true); 
 }
-
-int main(int argc, char *argv[])
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
